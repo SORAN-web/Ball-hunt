@@ -1,9 +1,10 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta charset="UTF-8">
   <title>Rolling Ball Runner - Fixed Version</title>
+  <meta name="viewport" content="width=900, user-scalable=no">
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700&display=swap" rel="stylesheet">
   <style>
     @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@700&display=swap');
     * {
@@ -142,49 +143,49 @@
   </style>
 </head>
 <body>
-  <div id="gameContainer">
-    <canvas id="gameCanvas" width="900" height="500"></canvas>
+<div id="gameContainer">
+  <canvas id="gameCanvas" width="900" height="500"></canvas>
 
-    <div id="hud" style="display:none;">
-      <div>Score: <span id="score">0</span></div>
-      <div>Lives: <span id="lives">3</span></div>
-      <div>Multiplier: <span id="multiplier">1.0x</span></div>
-    </div>
-
-    <div id="menu">
-      <h1>Rolling Ball Runner</h1>
-      <p>Space / Tap to jump (Double jump). Avoid obstacles, survive!</p>
-      <button id="startBtn">Start Game</button>
-      <button id="openSkinStoreBtn">Fantasy Skins</button>
-    </div>
-
-    <div id="pauseScreen" style="display:none;">
-      <h2>Paused</h2>
-      <p>Press P or Tap to Resume</p>
-    </div>
-
-    <div id="gameOverScreen" style="display:none;">
-      <h2>Game Over</h2>
-      <p>Your Score: <span id="finalScore">0</span></p>
-      <button id="restartBtn">Restart</button>
-      <button id="watchAdBtn">Watch Ad for Extra Life</button>
-    </div>
-
-    <div id="skinStore" style="display:none;">
-      <h2>Fantasy Skins</h2>
-      <p>Click to buy/select a skin. Prices from $1 to $20.</p>
-      <button class="skinBtn" data-skin="default" data-price="0">Default - Free</button>
-      <button class="skinBtn" data-skin="ice" data-price="1">Ice Realm - $1</button>
-      <button class="skinBtn" data-skin="fire" data-price="2">Fire Hell - $2</button>
-      <button class="skinBtn" data-skin="neon" data-price="5">Neon Dream - $5</button>
-      <button class="skinBtn" data-skin="cyber" data-price="8">Cyber Storm - $8</button>
-      <button class="skinBtn" data-skin="nature" data-price="12">Nature Wind - $12</button>
-      <button class="skinBtn" data-skin="space" data-price="15">Space Core - $15</button>
-      <button class="skinBtn" data-skin="legend" data-price="20">Legend Glow - $20</button>
-      <br/>
-      <button id="closeSkinStoreBtn">Close Store</button>
-    </div>
+  <div id="hud" style="display:none;">
+    <span>Score: <span id="score">0</span></span>
+    <span>Lives: <span id="lives">3</span></span>
+    <span>Multiplier: <span id="multiplier">1.00x</span></span>
   </div>
+
+  <div id="menu">
+    <h1>Rolling Ball Runner</h1>
+    <p>Space / Tap to jump (Double jump). Avoid obstacles, survive!</p>
+    <button id="startBtn">Start Game</button>
+    <button id="openSkinStoreBtn">Fantasy Skins</button>
+  </div>
+
+  <div id="pauseScreen" style="display:none;">
+    <h2>Paused</h2>
+    <p>Press P or Tap to Resume</p>
+  </div>
+
+  <div id="gameOverScreen" style="display:none;">
+    <h2>Game Over</h2>
+    <p>Your Score: <span id="finalScore">0</span></p>
+    <button id="restartBtn">Restart</button>
+    <button id="watchAdBtn">Watch Ad for Extra Life</button>
+  </div>
+
+  <div id="skinStore" style="display:none;">
+    <h2>Fantasy Skins</h2>
+    <p>Click to buy/select a skin. Prices from $1 to $20.</p>
+    <button class="skinBtn" data-skin="default" data-price="0">Default - Free</button>
+    <button class="skinBtn" data-skin="ice" data-price="1">Ice Realm - $1</button>
+    <button class="skinBtn" data-skin="fire" data-price="2">Fire Hell - $2</button>
+    <button class="skinBtn" data-skin="neon" data-price="5">Neon Dream - $5</button>
+    <button class="skinBtn" data-skin="cyber" data-price="8">Cyber Storm - $8</button>
+    <button class="skinBtn" data-skin="nature" data-price="12">Nature Wind - $12</button>
+    <button class="skinBtn" data-skin="space" data-price="15">Space Core - $15</button>
+    <button class="skinBtn" data-skin="legend" data-price="20">Legend Glow - $20</button>
+    <br>
+    <button id="closeSkinStoreBtn">Close Store</button>
+  </div>
+</div>
 
 <script>
 (() => {
@@ -355,7 +356,7 @@
 
       // Ball gradient
       const gradColors = skinColors[currentSkin].ballGradient;
-      const grad = ctx.createRadialGradient(screenX - this.radius/4, this.y - this.radius/3, this.radius/4, screenX, this.y, this.radius);
+      const grad = ctx.createRadialGradient(screenX - this.radius / 4, this.y - this.radius / 3, this.radius / 4, screenX, this.y, this.radius);
       grad.addColorStop(0, gradColors[0]);
       grad.addColorStop(0.5, gradColors[1]);
       grad.addColorStop(1, gradColors[2]);
@@ -388,7 +389,7 @@
     }
     draw() {
       const screenX = this.x - cameraX;
-      if(screenX + this.radius < 0 || screenX - this.radius > canvas.width) return;
+      if (screenX + this.radius < 0 || screenX - this.radius > canvas.width) return;
 
       ctx.shadowColor = `rgba(255, 20, 20, ${this.glowAlpha})`;
       ctx.shadowBlur = 18;
@@ -400,7 +401,7 @@
       ctx.shadowBlur = 0;
       ctx.beginPath();
       ctx.fillStyle = this.coreColor;
-      ctx.arc(screenX, this.y, this.radius/1.8, 0, 2 * Math.PI);
+      ctx.arc(screenX, this.y, this.radius / 1.8, 0, 2 * Math.PI);
       ctx.fill();
     }
   }
@@ -421,7 +422,7 @@
       this.y += this.vy;
       this.vy += 0.15;
       this.alpha -= 0.04;
-      if(this.alpha < 0) this.alpha = 0;
+      if (this.alpha < 0) this.alpha = 0;
     }
     draw() {
       ctx.save();
@@ -434,5 +435,252 @@
     }
   }
   function createJumpParticles(x, y) {
-    for(let i=0; i<10; i++) {
-      particles.push(new Particle(x
+    for (let i = 0; i < 10; i++) {
+      particles.push(new Particle(x, y));
+    }
+  }
+
+  function getTerrainHeight(x) {
+    return groundBaseY;
+  }
+
+  function spawnObstacle() {
+    let lastX = obstacles.length ? obstacles[obstacles.length - 1].x : ball.x + 500;
+    let minDistance = randRange(320, 500);
+    let obsX = lastX + minDistance;
+    if (obsX < worldWidth - 60) {
+      obstacles.push(new Obstacle(obsX, getTerrainHeight(obsX) - 28));
+    }
+  }
+
+  function drawStars() {
+    starLayers.forEach(layer => {
+      for (let s of layer.stars) {
+        let sx = (s.x - cameraX * layer.speedRatio) % canvas.width;
+        if (sx < 0) sx += canvas.width;
+        ctx.save();
+        ctx.globalAlpha = s.alpha;
+        ctx.beginPath();
+        ctx.arc(sx, s.y, s.size, 0, Math.PI * 2);
+        ctx.fillStyle = "#0ff";
+        ctx.shadowColor = "#0ff";
+        ctx.shadowBlur = 3;
+        ctx.fill();
+        ctx.restore();
+      }
+    });
+  }
+  function drawTerrain() {
+    ctx.save();
+    ctx.beginPath();
+    ctx.moveTo(0, canvas.height);
+    ctx.lineTo(0, getTerrainHeight(cameraX));
+    for (let x = 0; x <= canvas.width; x += 10) {
+      let worldX = cameraX + x;
+      ctx.lineTo(x, getTerrainHeight(worldX));
+    }
+    ctx.lineTo(canvas.width, canvas.height);
+    ctx.closePath();
+    ctx.fillStyle = skinColors[currentSkin].terrain;
+    ctx.shadowColor = "#00ffff";
+    ctx.shadowBlur = 44;
+    ctx.fill();
+    ctx.shadowBlur = 0;
+    ctx.restore();
+  }
+
+  function resetGame() {
+    ball = new Ball();
+    obstacles = [];
+    score = 0;
+    lives = maxLives;
+    scoreMultiplier = 1;
+    speed = baseSpeed;
+    obstacleInterval = 850;
+    obstacleTimer = 0;
+    cameraX = 0;
+    particles.length = 0;
+  }
+
+  function updateGame(dt) {
+    speed = Math.min(maxSpeed, baseSpeed + Math.floor(score / 100));
+    scoreMultiplier = 1 + Math.floor(score / 250) * 0.25;
+    obstacleInterval = Math.max(360, 850 - Math.floor(score / 30) * 25);
+
+    ball.update();
+    for (let obs of obstacles) obs.update();
+    for (let p of particles) p.update();
+
+    obstacles = obstacles.filter(o => o.x - cameraX + o.radius > 0);
+    particles.splice(0, particles.length - 150);
+
+    cameraX = Math.max(0, ball.x - 200);
+
+    obstacleTimer += dt * 1000;
+    if (obstacleTimer > obstacleInterval) {
+      spawnObstacle();
+      obstacleTimer = 0;
+    }
+
+    for (let i = 0; i < obstacles.length; i++) {
+      const obs = obstacles[i];
+      const dx = (ball.x - obs.x);
+      const dy = (ball.y - obs.y);
+      const dist = Math.sqrt(dx * dx + dy * dy);
+      if (dist < ball.radius + obs.radius - 5) {
+        obstacles.splice(i, 1);
+        i--;
+        lives--;
+        if (lives <= 0) {
+          endGame();
+          return;
+        }
+      }
+    }
+
+    score += speed * dt * 0.04 * scoreMultiplier;
+  }
+
+  function drawGame() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    document.body.style.background = skinColors[currentSkin].bg;
+    drawStars();
+    drawTerrain();
+    ball.draw();
+    for (let obs of obstacles) obs.draw();
+    for (let p of particles) p.draw();
+  }
+
+  function endGame() {
+    gameRunning = false;
+    hud.style.display = "none";
+    menu.style.display = "none";
+    pauseScreen.style.display = "none";
+    gameOverScreen.style.display = "block";
+    finalScoreEl.textContent = Math.floor(score);
+  }
+
+  function gameLoop(timestamp) {
+    if (!gameRunning || paused) return;
+
+    if (!lastTime) lastTime = timestamp;
+    const dt = Math.min(1.0, (timestamp - lastTime) / 1000);
+
+    updateGame(dt);
+    drawGame();
+
+    scoreEl.textContent = Math.floor(score);
+    livesEl.textContent = lives;
+    multiplierEl.textContent = scoreMultiplier.toFixed(2) + "x";
+
+    lastTime = timestamp;
+    requestAnimationFrame(gameLoop);
+  }
+
+  function handleJump() {
+    if (gameRunning && !paused) ball.jump();
+  }
+  window.addEventListener("keydown", e => {
+    if (e.code === "Space") {
+      handleJump();
+      e.preventDefault();
+    }
+    else if (e.code === "KeyP" && gameRunning) {
+      paused = !paused;
+      pauseScreen.style.display = paused ? "block" : "none";
+      if (!paused) {
+        lastTime = 0;
+        requestAnimationFrame(gameLoop);
+      }
+    }
+  });
+  canvas.addEventListener("pointerdown", e => {
+    if (gameRunning && !paused) {
+      handleJump();
+    }
+    if (paused) {
+      paused = false;
+      pauseScreen.style.display = "none";
+      lastTime = 0;
+      requestAnimationFrame(gameLoop);
+    }
+  });
+
+  startBtn.addEventListener("click", () => {
+    menu.style.display = "none";
+    gameOverScreen.style.display = "none";
+    hud.style.display = "flex";
+    resetGame();
+    gameRunning = true;
+    paused = false;
+    lastTime = 0;
+    requestAnimationFrame(gameLoop);
+  });
+
+  restartBtn.addEventListener("click", () => {
+    gameOverScreen.style.display = "none";
+    hud.style.display = "flex";
+    resetGame();
+    gameRunning = true;
+    paused = false;
+    lastTime = 0;
+    requestAnimationFrame(gameLoop);
+  });
+
+  watchAdBtn.addEventListener("click", () => {
+    if (lives <= 0) {
+      lives = 1;
+      gameOverScreen.style.display = "none";
+      hud.style.display = "flex";
+      gameRunning = true;
+      paused = false;
+      lastTime = 0;
+      requestAnimationFrame(gameLoop);
+    }
+  });
+
+  openSkinStoreBtn.addEventListener("click", () => {
+    skinStore.style.display = "block";
+    menu.style.display = "none";
+    gameOverScreen.style.display = "none";
+  });
+  closeSkinStoreBtn.addEventListener("click", () => {
+    skinStore.style.display = "none";
+    menu.style.display = "block";
+  });
+
+  document.querySelectorAll('.skinBtn').forEach(btn => {
+    btn.addEventListener("click", () => {
+      const skin = btn.dataset.skin;
+      const price = parseInt(btn.dataset.price, 10);
+      if (ownedSkins.has(skin) || price === 0) {
+        currentSkin = skin;
+        ownedSkins.add(skin);
+        document.querySelectorAll('.skinBtn').forEach(btn => btn.classList.remove('selected'));
+        btn.classList.add('selected');
+        skinStore.style.display = "none";
+        menu.style.display = "block";
+      } else {
+        if (confirm(`Purchase "${btn.textContent}" for $${price}?`)) {
+          ownedSkins.add(skin);
+          btn.textContent += " (Owned)";
+          currentSkin = skin;
+          document.querySelectorAll('.skinBtn').forEach(btn => btn.classList.remove('selected'));
+          btn.classList.add('selected');
+          skinStore.style.display = "none";
+          menu.style.display = "block";
+        }
+      }
+    });
+  });
+
+  document.querySelector('.skinBtn[data-skin="default"]').classList.add('selected');
+
+  menu.style.display = "block";
+  gameOverScreen.style.display = "none";
+  pauseScreen.style.display = "none";
+  hud.style.display = "none";
+})();
+</script>
+</body>
+</html>
