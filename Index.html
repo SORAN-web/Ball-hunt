@@ -1,89 +1,438 @@
-<!DOCTYPE html><html>
+<!DOCTYPE html>
+<html lang="en">
 <head>
-    <title>Jumping Ball Game</title>
-    <style>
-        body { margin: 0; overflow: hidden; }
-        canvas { background: #eee; display: block; margin: 0 auto; }
-    </style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Rolling Ball Runner - Fixed Version</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@700&display=swap');
+    * {
+      margin: 0; padding: 0; box-sizing: border-box;
+      user-select: none;
+    }
+    body, html {
+      width: 100%; height: 100%; overflow: hidden;
+      background: radial-gradient(ellipse at center, #001020 0%, #000000 100%);
+      font-family: 'Orbitron', sans-serif;
+      color: #0ff;
+      display: flex; justify-content: center; align-items: center;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+    }
+    #gameContainer {
+      position: relative;
+      width: 900px;
+      height: 500px;
+      background: #000011;
+      border-radius: 20px;
+      box-shadow:
+        0 0 20px #0ff,
+        inset 0 0 50px #003366;
+    }
+    canvas {
+      display: block;
+      width: 900px;
+      height: 500px;
+      border-radius: 20px;
+      background: transparent;
+    }
+    #hud, #menu, #pauseScreen, #gameOverScreen, #skinStore {
+      position: absolute;
+      width: 100%;
+      text-align: center;
+      z-index: 10;
+      color: #0ff;
+      text-shadow:
+        0 0 5px #00ffff,
+        0 0 10px #00ffff;
+      user-select: none;
+      pointer-events: none;
+      font-weight: 900;
+    }
+    #hud {
+      top: 20px;
+      font-size: 20px;
+      font-weight: 700;
+      display: flex;
+      justify-content: space-around;
+      pointer-events: auto;
+      user-select: none;
+      z-index: 20;
+    }
+    #menu, #pauseScreen, #gameOverScreen, #skinStore {
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      background: rgba(0, 30, 60, 0.9);
+      padding: 30px 40px;
+      border-radius: 15px;
+      pointer-events: auto;
+      font-size: 22px;
+      line-height: 1.2;
+      max-width: 80%;
+      box-shadow:
+        0 0 20px #0ff,
+        inset 0 0 60px #00ffff;
+    }
+    #menu h1, #pauseScreen h2, #gameOverScreen h2, #skinStore h2 {
+      font-size: 42px;
+      margin-bottom: 10px;
+      text-transform: uppercase;
+      letter-spacing: 0.15em;
+    }
+    #menu p, #pauseScreen p, #gameOverScreen p, #skinStore p {
+      margin-bottom: 25px;
+      font-weight: 700;
+    }
+    button {
+      background: linear-gradient(90deg, #00ffff 0%, #004466 100%);
+      border: none;
+      border-radius: 12px;
+      padding: 14px 30px;
+      color: #001f26;
+      font-weight: 900;
+      font-size: 20px;
+      cursor: pointer;
+      transition: 0.3s ease;
+      user-select: none;
+      box-shadow:
+        0 0 10px #00ffff;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      margin: 6px;
+    }
+    button:hover {
+      background: linear-gradient(90deg, #00ffff 0%, #00ffff 70%, #004466 100%);
+      color: #e0ffff;
+      box-shadow:
+        0 0 20px #00ffff,
+        0 0 40px #00ffff;
+    }
+    button:active {
+      transform: scale(0.95);
+    }
+    .skinBtn {
+      display: inline-block;
+      min-width: 140px;
+      padding: 12px 18px;
+      margin: 6px 8px;
+      border-radius: 12px;
+      font-weight: 900;
+      font-size: 18px;
+      user-select: none;
+      cursor: pointer;
+      background: linear-gradient(90deg, #002244 0%, #004466 100%);
+      color: #00ffff;
+      box-shadow: 0 0 8px #004466 inset;
+      transition: 0.3s ease;
+    }
+    .skinBtn:hover {
+      background: linear-gradient(90deg, #00ffff 0%, #004466 100%);
+      color: #001f26;
+      box-shadow:
+        0 0 20px #00ffff,
+        0 0 40px #00ffff inset;
+    }
+    .skinBtn.selected {
+      border: 3px solid #00ffff;
+      box-shadow:
+        0 0 30px #00ffff,
+        0 0 40px #00ffff inset;
+    }
+  </style>
 </head>
 <body>
-<canvas id="gameCanvas" width="800" height="400"></canvas>
+  <div id="gameContainer">
+    <canvas id="gameCanvas" width="900" height="500"></canvas>
+
+    <div id="hud" style="display:none;">
+      <div>Score: <span id="score">0</span></div>
+      <div>Lives: <span id="lives">3</span></div>
+      <div>Multiplier: <span id="multiplier">1.0x</span></div>
+    </div>
+
+    <div id="menu">
+      <h1>Rolling Ball Runner</h1>
+      <p>Space / Tap to jump (Double jump). Avoid obstacles, survive!</p>
+      <button id="startBtn">Start Game</button>
+      <button id="openSkinStoreBtn">Fantasy Skins</button>
+    </div>
+
+    <div id="pauseScreen" style="display:none;">
+      <h2>Paused</h2>
+      <p>Press P or Tap to Resume</p>
+    </div>
+
+    <div id="gameOverScreen" style="display:none;">
+      <h2>Game Over</h2>
+      <p>Your Score: <span id="finalScore">0</span></p>
+      <button id="restartBtn">Restart</button>
+      <button id="watchAdBtn">Watch Ad for Extra Life</button>
+    </div>
+
+    <div id="skinStore" style="display:none;">
+      <h2>Fantasy Skins</h2>
+      <p>Click to buy/select a skin. Prices from $1 to $20.</p>
+      <button class="skinBtn" data-skin="default" data-price="0">Default - Free</button>
+      <button class="skinBtn" data-skin="ice" data-price="1">Ice Realm - $1</button>
+      <button class="skinBtn" data-skin="fire" data-price="2">Fire Hell - $2</button>
+      <button class="skinBtn" data-skin="neon" data-price="5">Neon Dream - $5</button>
+      <button class="skinBtn" data-skin="cyber" data-price="8">Cyber Storm - $8</button>
+      <button class="skinBtn" data-skin="nature" data-price="12">Nature Wind - $12</button>
+      <button class="skinBtn" data-skin="space" data-price="15">Space Core - $15</button>
+      <button class="skinBtn" data-skin="legend" data-price="20">Legend Glow - $20</button>
+      <br/>
+      <button id="closeSkinStoreBtn">Close Store</button>
+    </div>
+  </div>
+
 <script>
-const canvas = document.getElementById('gameCanvas');
-const ctx = canvas.getContext('2d');// Ball properties const ball = { x: 100, y: 300, radius: 20, vy: 0, gravity: 0.5, jumpStrength: -10, grounded: false };
+(() => {
+  const canvas = document.getElementById("gameCanvas");
+  const ctx = canvas.getContext("2d");
 
-// Obstacles array let obstacles = []; let obstacleTimer = 0; let gameRunning = true;
+  const hud = document.getElementById("hud");
+  const scoreEl = document.getElementById("score");
+  const livesEl = document.getElementById("lives");
+  const multiplierEl = document.getElementById("multiplier");
+  const menu = document.getElementById("menu");
+  const pauseScreen = document.getElementById("pauseScreen");
+  const gameOverScreen = document.getElementById("gameOverScreen");
+  const finalScoreEl = document.getElementById("finalScore");
+  const startBtn = document.getElementById("startBtn");
+  const restartBtn = document.getElementById("restartBtn");
+  const watchAdBtn = document.getElementById("watchAdBtn");
+  const openSkinStoreBtn = document.getElementById("openSkinStoreBtn");
+  const skinStore = document.getElementById("skinStore");
+  const closeSkinStoreBtn = document.getElementById("closeSkinStoreBtn");
 
-// Game loop function gameLoop() { if (!gameRunning) return;
+  const gravity = 1.1;
+  const jumpStrength = -19;
+  const baseSpeed = 7;
+  const maxSpeed = 20;
+  const groundBaseY = canvas.height - 110;
+  const maxLives = 3;
+  const worldWidth = 30000;
 
-ctx.clearRect(0, 0, canvas.width, canvas.height);
-
-// Ball physics
-ball.vy += ball.gravity;
-ball.y += ball.vy;
-
-// Ground collision
-if (ball.y + ball.radius >= canvas.height) {
-    ball.y = canvas.height - ball.radius;
-    ball.vy = 0;
-    ball.grounded = true;
-} else {
-    ball.grounded = false;
-}
-
-// Draw ball
-ctx.beginPath();
-ctx.arc(ball.x, ball.y, ball.radius, 0, Math.PI * 2);
-ctx.fillStyle = 'red';
-ctx.fill();
-ctx.closePath();
-
-// Handle obstacles
-obstacleTimer++;
-if (obstacleTimer > 100) {
-    let heightFactor = Math.random() < 0.5 ? 1 : 2;
-    obstacles.push({
-        x: canvas.width,
-        y: canvas.height - (heightFactor * 60),
-        radius: 30
-    });
-    obstacleTimer = 0;
-}
-
-for (let i = 0; i < obstacles.length; i++) {
-    obstacles[i].x -= 5;
-
-    // Draw obstacle
-    ctx.beginPath();
-    ctx.arc(obstacles[i].x, obstacles[i].y, obstacles[i].radius, 0, Math.PI * 2);
-    ctx.fillStyle = 'black';
-    ctx.fill();
-    ctx.closePath();
-
-    // Collision detection
-    let dx = ball.x - obstacles[i].x;
-    let dy = ball.y - obstacles[i].y;
-    let distance = Math.sqrt(dx * dx + dy * dy);
-    if (distance < ball.radius + obstacles[i].radius) {
-        gameRunning = false;
-        setTimeout(() => {
-            alert('Game Over!');
-            document.location.reload();
-        }, 100);
-        return;
+  // Stars for parallax background
+  const starLayers = [
+    { count: 120, speedRatio: 0.2, stars: [] },
+    { count: 80, speedRatio: 0.5, stars: [] },
+    { count: 60, speedRatio: 0.8, stars: [] },
+  ];
+  function randRange(min, max) { return Math.random() * (max - min) + min; }
+  starLayers.forEach(layer => {
+    for(let i=0; i<layer.count; i++){
+      layer.stars.push({
+        x: Math.random() * canvas.width,
+        y: Math.random() * canvas.height,
+        size: randRange(1,2.5),
+        alpha: randRange(0.1,0.9),
+      });
     }
-}
+  });
 
-// Remove off-screen obstacles
-obstacles = obstacles.filter(ob => ob.x + ob.radius > 0);
+  let ball, obstacles, score, lives, scoreMultiplier, speed;
+  let gameRunning, paused, lastTime;
+  let obstacleTimer, obstacleInterval;
+  let cameraX = 0;
 
-requestAnimationFrame(gameLoop);
+  let currentSkin = "default";
+  const ownedSkins = new Set(["default"]);
 
-}
+  // Colors for skins
+  const skinColors = {
+    default: {
+      bg: "radial-gradient(ellipse at center, #001020 0%, #000000 100%)",
+      terrain: "#001d33",
+      ballGradient: ["#001f4d", "#004080", "#001122"],
+      obstacleColor: "#660000",
+      obstacleCore: "#990000",
+    },
+    ice: {
+      bg: "radial-gradient(ellipse at center, #cceeff 0%, #003366 100%)",
+      terrain: "#336699",
+      ballGradient: ["#bbdefb", "#64b5f6", "#1e88e5"],
+      obstacleColor: "#3399cc",
+      obstacleCore: "#66ccff",
+    },
+    fire: {
+      bg: "radial-gradient(ellipse at center, #330000 0%, #660000 100%)",
+      terrain: "#661111",
+      ballGradient: ["#ff6666", "#ff3333", "#990000"],
+      obstacleColor: "#cc3300",
+      obstacleCore: "#ff4400",
+    },
+    neon: {
+      bg: "radial-gradient(ellipse at center, #0ff 0%, #004466 100%)",
+      terrain: "#003344",
+      ballGradient: ["#00ffff", "#00cccc", "#003333"],
+      obstacleColor: "#00ffcc",
+      obstacleCore: "#00cc99",
+    },
+    cyber: {
+      bg: "radial-gradient(ellipse at center, #111122 0%, #003344 100%)",
+      terrain: "#112244",
+      ballGradient: ["#55eeff", "#33ccff", "#1177cc"],
+      obstacleColor: "#1177cc",
+      obstacleCore: "#00aaff",
+    },
+    nature: {
+      bg: "radial-gradient(ellipse at center, #224422 0%, #001100 100%)",
+      terrain: "#224422",
+      ballGradient: ["#339933", "#227722", "#114411"],
+      obstacleColor: "#228833",
+      obstacleCore: "#33cc44",
+    },
+    space: {
+      bg: "radial-gradient(ellipse at center, #111122 0%, #000000 100%)",
+      terrain: "#111133",
+      ballGradient: ["#6666ff", "#3333cc", "#000099"],
+      obstacleColor: "#5555ff",
+      obstacleCore: "#8888ff",
+    },
+    legend: {
+      bg: "radial-gradient(ellipse at center, #220022 0%, #440044 100%)",
+      terrain: "#440044",
+      ballGradient: ["#ff00ff", "#cc00cc", "#770077"],
+      obstacleColor: "#aa00aa",
+      obstacleCore: "#dd00dd",
+    },
+  };
 
-// Jump control window.addEventListener('keydown', function(e) { if ((e.code === 'Space' || e.code === 'ArrowUp') && ball.grounded) { ball.vy = ball.jumpStrength; } });
+  class Ball {
+    constructor() {
+      this.radius = 30;
+      this.x = 200;
+      this.y = groundBaseY - this.radius;
+      this.vx = baseSpeed;
+      this.vy = 0;
+      this.jumpCount = 0;
+      this.maxJumps = 2;
+      this.grounded = true;
+      this.shadowOffsetY = 0;
+      this.shadowBaseAlpha = 0.3;
+      this.shadowMaxAlpha = 0.8;
+    }
+    update() {
+      this.vy += gravity;
+      this.y += this.vy;
+      this.x += speed;
 
-// Start the game requestAnimationFrame(gameLoop); </script>
+      if (this.x + this.radius > worldWidth) this.x = worldWidth - this.radius;
 
-</body>
-</html>
+      const terrainY = getTerrainHeight(this.x);
+      if (this.y + this.radius > terrainY) {
+        this.y = terrainY - this.radius;
+        this.vy = 0;
+        if (!this.grounded) {
+          this.grounded = true;
+          this.jumpCount = 0;
+        }
+      } else {
+        this.grounded = false;
+      }
+
+      this.shadowOffsetY = Math.min(30, Math.max(0, terrainY - (this.y + this.radius)));
+    }
+    jump() {
+      if (this.jumpCount < this.maxJumps) {
+        this.vy = jumpStrength;
+        this.jumpCount++;
+        this.grounded = false;
+        createJumpParticles(this.x, this.y + this.radius);
+      }
+    }
+    draw() {
+      const screenX = this.x - cameraX;
+
+      // Shadow
+      const terrainY = getTerrainHeight(this.x);
+      ctx.beginPath();
+      ctx.ellipse(screenX, terrainY + this.shadowOffsetY, this.radius * 1.1, this.radius * 0.3, 0, 0, 2 * Math.PI);
+      ctx.fillStyle = `rgba(0,0,0,${this.shadowBaseAlpha + (this.shadowMaxAlpha - this.shadowBaseAlpha) * (1 - this.shadowOffsetY / 30)})`;
+      ctx.fill();
+
+      // Ball gradient
+      const gradColors = skinColors[currentSkin].ballGradient;
+      const grad = ctx.createRadialGradient(screenX - this.radius/4, this.y - this.radius/3, this.radius/4, screenX, this.y, this.radius);
+      grad.addColorStop(0, gradColors[0]);
+      grad.addColorStop(0.5, gradColors[1]);
+      grad.addColorStop(1, gradColors[2]);
+      ctx.fillStyle = grad;
+      ctx.shadowColor = "#00ffff";
+      ctx.shadowBlur = 12;
+      ctx.beginPath();
+      ctx.arc(screenX, this.y, this.radius, 0, 2 * Math.PI);
+      ctx.fill();
+
+      ctx.shadowBlur = 0;
+    }
+  }
+
+  class Obstacle {
+    constructor(x, y, radius = 28) {
+      this.x = x;
+      this.y = y;
+      this.radius = radius;
+      this.color = skinColors[currentSkin].obstacleColor;
+      this.coreColor = skinColors[currentSkin].obstacleCore;
+      this.glowAlpha = 0.7;
+      this.glowDirection = 1;
+    }
+    update() {
+      this.x -= speed;
+      this.glowAlpha += 0.015 * this.glowDirection;
+      if (this.glowAlpha >= 1) this.glowDirection = -1;
+      else if (this.glowAlpha <= 0.5) this.glowDirection = 1;
+    }
+    draw() {
+      const screenX = this.x - cameraX;
+      if(screenX + this.radius < 0 || screenX - this.radius > canvas.width) return;
+
+      ctx.shadowColor = `rgba(255, 20, 20, ${this.glowAlpha})`;
+      ctx.shadowBlur = 18;
+      ctx.beginPath();
+      ctx.fillStyle = this.color;
+      ctx.arc(screenX, this.y, this.radius, 0, 2 * Math.PI);
+      ctx.fill();
+
+      ctx.shadowBlur = 0;
+      ctx.beginPath();
+      ctx.fillStyle = this.coreColor;
+      ctx.arc(screenX, this.y, this.radius/1.8, 0, 2 * Math.PI);
+      ctx.fill();
+    }
+  }
+
+  const particles = [];
+  class Particle {
+    constructor(x, y) {
+      this.x = x;
+      this.y = y;
+      this.vx = (Math.random() - 0.5) * 5;
+      this.vy = Math.random() * -4 - 3;
+      this.alpha = 1;
+      this.radius = randRange(2, 5);
+      this.color = "#00ffff";
+    }
+    update() {
+      this.x += this.vx;
+      this.y += this.vy;
+      this.vy += 0.15;
+      this.alpha -= 0.04;
+      if(this.alpha < 0) this.alpha = 0;
+    }
+    draw() {
+      ctx.save();
+      ctx.globalAlpha = this.alpha;
+      ctx.fillStyle = this.color;
+      ctx.beginPath();
+      ctx.arc(this.x - cameraX, this.y, this.radius, 0, 2 * Math.PI);
+      ctx.fill();
+      ctx.restore();
+    }
+  }
+  function createJumpParticles(x, y) {
+    for(let i=0; i<10; i++) {
+      particles.push(new Particle(x
