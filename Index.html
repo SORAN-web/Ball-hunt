@@ -1,10 +1,9 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" >
 <head>
-  <meta charset="UTF-8">
-  <title>Rolling Ball Runner - Fixed Version</title>
-  <meta name="viewport" content="width=900, user-scalable=no">
-  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700&display=swap" rel="stylesheet">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Rolling Ball Runner - Ultra Advanced</title>
   <style>
     @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@700&display=swap');
     * {
@@ -37,7 +36,7 @@
       border-radius: 20px;
       background: transparent;
     }
-    #hud, #menu, #pauseScreen, #gameOverScreen, #skinStore {
+    #hud, #menu, #pauseScreen, #gameOverScreen {
       position: absolute;
       width: 100%;
       text-align: center;
@@ -60,7 +59,7 @@
       user-select: none;
       z-index: 20;
     }
-    #menu, #pauseScreen, #gameOverScreen, #skinStore {
+    #menu, #pauseScreen, #gameOverScreen {
       top: 50%;
       left: 50%;
       transform: translate(-50%, -50%);
@@ -75,13 +74,13 @@
         0 0 20px #0ff,
         inset 0 0 60px #00ffff;
     }
-    #menu h1, #pauseScreen h2, #gameOverScreen h2, #skinStore h2 {
+    #menu h1, #pauseScreen h2, #gameOverScreen h2 {
       font-size: 42px;
       margin-bottom: 10px;
       text-transform: uppercase;
       letter-spacing: 0.15em;
     }
-    #menu p, #pauseScreen p, #gameOverScreen p, #skinStore p {
+    #menu p, #pauseScreen p, #gameOverScreen p {
       margin-bottom: 25px;
       font-weight: 700;
     }
@@ -100,7 +99,6 @@
         0 0 10px #00ffff;
       text-transform: uppercase;
       letter-spacing: 0.1em;
-      margin: 6px;
     }
     button:hover {
       background: linear-gradient(90deg, #00ffff 0%, #00ffff 70%, #004466 100%);
@@ -112,80 +110,35 @@
     button:active {
       transform: scale(0.95);
     }
-    .skinBtn {
-      display: inline-block;
-      min-width: 140px;
-      padding: 12px 18px;
-      margin: 6px 8px;
-      border-radius: 12px;
-      font-weight: 900;
-      font-size: 18px;
-      user-select: none;
-      cursor: pointer;
-      background: linear-gradient(90deg, #002244 0%, #004466 100%);
-      color: #00ffff;
-      box-shadow: 0 0 8px #004466 inset;
-      transition: 0.3s ease;
-    }
-    .skinBtn:hover {
-      background: linear-gradient(90deg, #00ffff 0%, #004466 100%);
-      color: #001f26;
-      box-shadow:
-        0 0 20px #00ffff,
-        0 0 40px #00ffff inset;
-    }
-    .skinBtn.selected {
-      border: 3px solid #00ffff;
-      box-shadow:
-        0 0 30px #00ffff,
-        0 0 40px #00ffff inset;
-    }
   </style>
 </head>
 <body>
-<div id="gameContainer">
-  <canvas id="gameCanvas" width="900" height="500"></canvas>
+  <div id="gameContainer">
+    <canvas id="gameCanvas" width="900" height="500"></canvas>
 
-  <div id="hud" style="display:none;">
-    <span>Score: <span id="score">0</span></span>
-    <span>Lives: <span id="lives">3</span></span>
-    <span>Multiplier: <span id="multiplier">1.00x</span></span>
-  </div>
+    <div id="hud" style="display:none;">
+      <div>Score: <span id="score">0</span></div>
+      <div>Lives: <span id="lives">3</span></div>
+      <div>Multiplier: <span id="multiplier">1.0x</span></div>
+    </div>
 
-  <div id="menu">
-    <h1>Rolling Ball Runner</h1>
-    <p>Space / Tap to jump (Double jump). Avoid obstacles, survive!</p>
-    <button id="startBtn">Start Game</button>
-    <button id="openSkinStoreBtn">Fantasy Skins</button>
-  </div>
+    <div id="menu">
+      <h1>Rolling Ball Runner</h1>
+      <p>Space / Tap to jump (Double jump). Avoid obstacles, survive!</p>
+      <button id="startBtn">Start Game</button>
+    </div>
 
-  <div id="pauseScreen" style="display:none;">
-    <h2>Paused</h2>
-    <p>Press P or Tap to Resume</p>
-  </div>
+    <div id="pauseScreen" style="display:none;">
+      <h2>Paused</h2>
+      <p>Press P or Tap to Resume</p>
+    </div>
 
-  <div id="gameOverScreen" style="display:none;">
-    <h2>Game Over</h2>
-    <p>Your Score: <span id="finalScore">0</span></p>
-    <button id="restartBtn">Restart</button>
-    <button id="watchAdBtn">Watch Ad for Extra Life</button>
+    <div id="gameOverScreen" style="display:none;">
+      <h2>Game Over</h2>
+      <p>Your Score: <span id="finalScore">0</span></p>
+      <button id="restartBtn">Restart</button>
+    </div>
   </div>
-
-  <div id="skinStore" style="display:none;">
-    <h2>Fantasy Skins</h2>
-    <p>Click to buy/select a skin. Prices from $1 to $20.</p>
-    <button class="skinBtn" data-skin="default" data-price="0">Default - Free</button>
-    <button class="skinBtn" data-skin="ice" data-price="1">Ice Realm - $1</button>
-    <button class="skinBtn" data-skin="fire" data-price="2">Fire Hell - $2</button>
-    <button class="skinBtn" data-skin="neon" data-price="5">Neon Dream - $5</button>
-    <button class="skinBtn" data-skin="cyber" data-price="8">Cyber Storm - $8</button>
-    <button class="skinBtn" data-skin="nature" data-price="12">Nature Wind - $12</button>
-    <button class="skinBtn" data-skin="space" data-price="15">Space Core - $15</button>
-    <button class="skinBtn" data-skin="legend" data-price="20">Legend Glow - $20</button>
-    <br>
-    <button id="closeSkinStoreBtn">Close Store</button>
-  </div>
-</div>
 
 <script>
 (() => {
@@ -202,11 +155,8 @@
   const finalScoreEl = document.getElementById("finalScore");
   const startBtn = document.getElementById("startBtn");
   const restartBtn = document.getElementById("restartBtn");
-  const watchAdBtn = document.getElementById("watchAdBtn");
-  const openSkinStoreBtn = document.getElementById("openSkinStoreBtn");
-  const skinStore = document.getElementById("skinStore");
-  const closeSkinStoreBtn = document.getElementById("closeSkinStoreBtn");
 
+  // Game constants
   const gravity = 1.1;
   const jumpStrength = -19;
   const baseSpeed = 7;
@@ -215,13 +165,17 @@
   const maxLives = 3;
   const worldWidth = 30000;
 
-  // Stars for parallax background
+  // Parallax star layers for background
   const starLayers = [
     { count: 120, speedRatio: 0.2, stars: [] },
     { count: 80, speedRatio: 0.5, stars: [] },
     { count: 60, speedRatio: 0.8, stars: [] },
   ];
+
+  // Utility: random between min and max
   function randRange(min, max) { return Math.random() * (max - min) + min; }
+
+  // Initialize stars for each layer
   starLayers.forEach(layer => {
     for(let i=0; i<layer.count; i++){
       layer.stars.push({
@@ -233,74 +187,7 @@
     }
   });
 
-  let ball, obstacles, score, lives, scoreMultiplier, speed;
-  let gameRunning, paused, lastTime;
-  let obstacleTimer, obstacleInterval;
-  let cameraX = 0;
-
-  let currentSkin = "default";
-  const ownedSkins = new Set(["default"]);
-
-  // Colors for skins
-  const skinColors = {
-    default: {
-      bg: "radial-gradient(ellipse at center, #001020 0%, #000000 100%)",
-      terrain: "#001d33",
-      ballGradient: ["#001f4d", "#004080", "#001122"],
-      obstacleColor: "#660000",
-      obstacleCore: "#990000",
-    },
-    ice: {
-      bg: "radial-gradient(ellipse at center, #cceeff 0%, #003366 100%)",
-      terrain: "#336699",
-      ballGradient: ["#bbdefb", "#64b5f6", "#1e88e5"],
-      obstacleColor: "#3399cc",
-      obstacleCore: "#66ccff",
-    },
-    fire: {
-      bg: "radial-gradient(ellipse at center, #330000 0%, #660000 100%)",
-      terrain: "#661111",
-      ballGradient: ["#ff6666", "#ff3333", "#990000"],
-      obstacleColor: "#cc3300",
-      obstacleCore: "#ff4400",
-    },
-    neon: {
-      bg: "radial-gradient(ellipse at center, #0ff 0%, #004466 100%)",
-      terrain: "#003344",
-      ballGradient: ["#00ffff", "#00cccc", "#003333"],
-      obstacleColor: "#00ffcc",
-      obstacleCore: "#00cc99",
-    },
-    cyber: {
-      bg: "radial-gradient(ellipse at center, #111122 0%, #003344 100%)",
-      terrain: "#112244",
-      ballGradient: ["#55eeff", "#33ccff", "#1177cc"],
-      obstacleColor: "#1177cc",
-      obstacleCore: "#00aaff",
-    },
-    nature: {
-      bg: "radial-gradient(ellipse at center, #224422 0%, #001100 100%)",
-      terrain: "#224422",
-      ballGradient: ["#339933", "#227722", "#114411"],
-      obstacleColor: "#228833",
-      obstacleCore: "#33cc44",
-    },
-    space: {
-      bg: "radial-gradient(ellipse at center, #111122 0%, #000000 100%)",
-      terrain: "#111133",
-      ballGradient: ["#6666ff", "#3333cc", "#000099"],
-      obstacleColor: "#5555ff",
-      obstacleCore: "#8888ff",
-    },
-    legend: {
-      bg: "radial-gradient(ellipse at center, #220022 0%, #440044 100%)",
-      terrain: "#440044",
-      ballGradient: ["#ff00ff", "#cc00cc", "#770077"],
-      obstacleColor: "#aa00aa",
-      obstacleCore: "#dd00dd",
-    },
-  };
-
+  // Ball class
   class Ball {
     constructor() {
       this.radius = 30;
@@ -334,6 +221,7 @@
         this.grounded = false;
       }
 
+      // Shadow offset for bounce effect
       this.shadowOffsetY = Math.min(30, Math.max(0, terrainY - (this.y + this.radius)));
     }
     jump() {
@@ -355,11 +243,10 @@
       ctx.fill();
 
       // Ball gradient
-      const gradColors = skinColors[currentSkin].ballGradient;
-      const grad = ctx.createRadialGradient(screenX - this.radius / 4, this.y - this.radius / 3, this.radius / 4, screenX, this.y, this.radius);
-      grad.addColorStop(0, gradColors[0]);
-      grad.addColorStop(0.5, gradColors[1]);
-      grad.addColorStop(1, gradColors[2]);
+      const grad = ctx.createRadialGradient(screenX - this.radius/4, this.y - this.radius/3, this.radius/4, screenX, this.y, this.radius);
+      grad.addColorStop(0, "#001f4d");
+      grad.addColorStop(0.5, "#004080");
+      grad.addColorStop(1, "#001122");
       ctx.fillStyle = grad;
       ctx.shadowColor = "#00ffff";
       ctx.shadowBlur = 12;
@@ -367,30 +254,33 @@
       ctx.arc(screenX, this.y, this.radius, 0, 2 * Math.PI);
       ctx.fill();
 
+      // Reset shadow blur
       ctx.shadowBlur = 0;
     }
   }
 
+  // Obstacle class
   class Obstacle {
     constructor(x, y, radius = 28) {
       this.x = x;
       this.y = y;
       this.radius = radius;
-      this.color = skinColors[currentSkin].obstacleColor;
-      this.coreColor = skinColors[currentSkin].obstacleCore;
+      this.color = "#660000";
       this.glowAlpha = 0.7;
       this.glowDirection = 1;
     }
     update() {
       this.x -= speed;
+      // Glow pulse animation
       this.glowAlpha += 0.015 * this.glowDirection;
       if (this.glowAlpha >= 1) this.glowDirection = -1;
       else if (this.glowAlpha <= 0.5) this.glowDirection = 1;
     }
     draw() {
       const screenX = this.x - cameraX;
-      if (screenX + this.radius < 0 || screenX - this.radius > canvas.width) return;
+      if(screenX + this.radius < 0 || screenX - this.radius > canvas.width) return;
 
+      // Glow
       ctx.shadowColor = `rgba(255, 20, 20, ${this.glowAlpha})`;
       ctx.shadowBlur = 18;
       ctx.beginPath();
@@ -399,288 +289,261 @@
       ctx.fill();
 
       ctx.shadowBlur = 0;
+      // Core circle
       ctx.beginPath();
-      ctx.fillStyle = this.coreColor;
-      ctx.arc(screenX, this.y, this.radius / 1.8, 0, 2 * Math.PI);
+      ctx.fillStyle = "#990000";
+      ctx.arc(screenX, this.y, this.radius*0.7, 0, 2 * Math.PI);
       ctx.fill();
     }
   }
 
+  // Particle system for jumps & collisions
   const particles = [];
   class Particle {
-    constructor(x, y) {
+    constructor(x, y, vx, vy, radius, color, lifetime=30) {
       this.x = x;
       this.y = y;
-      this.vx = (Math.random() - 0.5) * 5;
-      this.vy = Math.random() * -4 - 3;
-      this.alpha = 1;
-      this.radius = randRange(2, 5);
-      this.color = "#00ffff";
+      this.vx = vx;
+      this.vy = vy;
+      this.radius = radius;
+      this.color = color;
+      this.lifetime = lifetime;
+      this.age = 0;
     }
     update() {
       this.x += this.vx;
       this.y += this.vy;
-      this.vy += 0.15;
-      this.alpha -= 0.04;
-      if (this.alpha < 0) this.alpha = 0;
+      this.vy += 0.3; // gravity
+      this.age++;
+      this.radius *= 0.95;
     }
     draw() {
-      ctx.save();
-      ctx.globalAlpha = this.alpha;
-      ctx.fillStyle = this.color;
       ctx.beginPath();
+      ctx.fillStyle = this.color;
+      ctx.globalAlpha = Math.max(0, 1 - this.age / this.lifetime);
       ctx.arc(this.x - cameraX, this.y, this.radius, 0, 2 * Math.PI);
       ctx.fill();
-      ctx.restore();
+      ctx.globalAlpha = 1;
     }
   }
   function createJumpParticles(x, y) {
-    for (let i = 0; i < 10; i++) {
-      particles.push(new Particle(x, y));
+    for(let i=0; i<15; i++){
+      const angle = Math.random() * Math.PI - Math.PI/2;
+      const speed = Math.random() * 5 + 2;
+      const vx = Math.cos(angle) * speed;
+      const vy = Math.sin(angle) * speed;
+      particles.push(new Particle(x + vx * 3, y, vx, vy, 6, "#00ffff", 40));
+    }
+  }
+  function createCollisionParticles(x, y) {
+    for(let i=0; i<25; i++){
+      const angle = Math.random() * Math.PI * 2;
+      const speed = Math.random() * 6 + 2;
+      const vx = Math.cos(angle) * speed;
+      const vy = Math.sin(angle) * speed;
+      particles.push(new Particle(x + vx * 3, y, vx, vy, 8, "#ff4444", 50));
     }
   }
 
+  // Terrain function
   function getTerrainHeight(x) {
-    return groundBaseY;
+    return groundBaseY
+      - 22 * Math.sin(x * 0.007 + 2)
+      - 16 * Math.sin(x * 0.013 + 50)
+      - 12 * Math.sin(x * 0.025 + 100);
   }
 
-  function spawnObstacle() {
-    let lastX = obstacles.length ? obstacles[obstacles.length - 1].x : ball.x + 500;
-    let minDistance = randRange(320, 500);
-    let obsX = lastX + minDistance;
-    if (obsX < worldWidth - 60) {
-      obstacles.push(new Obstacle(obsX, getTerrainHeight(obsX) - 28));
-    }
+  function checkCollisionCircle(a, b) {
+    const dx = a.x - b.x;
+    const dy = a.y - b.y;
+    const dist = Math.sqrt(dx*dx + dy*dy);
+    return dist < a.radius + b.radius;
   }
 
-  function drawStars() {
-    starLayers.forEach(layer => {
-      for (let s of layer.stars) {
-        let sx = (s.x - cameraX * layer.speedRatio) % canvas.width;
-        if (sx < 0) sx += canvas.width;
-        ctx.save();
-        ctx.globalAlpha = s.alpha;
-        ctx.beginPath();
-        ctx.arc(sx, s.y, s.size, 0, Math.PI * 2);
-        ctx.fillStyle = "#0ff";
-        ctx.shadowColor = "#0ff";
-        ctx.shadowBlur = 3;
-        ctx.fill();
-        ctx.restore();
-      }
-    });
-  }
-  function drawTerrain() {
-    ctx.save();
-    ctx.beginPath();
-    ctx.moveTo(0, canvas.height);
-    ctx.lineTo(0, getTerrainHeight(cameraX));
-    for (let x = 0; x <= canvas.width; x += 10) {
-      let worldX = cameraX + x;
-      ctx.lineTo(x, getTerrainHeight(worldX));
-    }
-    ctx.lineTo(canvas.width, canvas.height);
-    ctx.closePath();
-    ctx.fillStyle = skinColors[currentSkin].terrain;
-    ctx.shadowColor = "#00ffff";
-    ctx.shadowBlur = 44;
-    ctx.fill();
-    ctx.shadowBlur = 0;
-    ctx.restore();
-  }
+  // Game state
+  let ball, obstacles, score, lives, scoreMultiplier, speed, gameRunning, paused, lastTime;
+  let obstacleTimer, obstacleInterval;
+  let cameraX = 0;
 
   function resetGame() {
     ball = new Ball();
     obstacles = [];
     score = 0;
     lives = maxLives;
-    scoreMultiplier = 1;
+    scoreMultiplier = 1.0;
     speed = baseSpeed;
-    obstacleInterval = 850;
+    gameRunning = true;
+    paused = false;
+    lastTime = 0;
     obstacleTimer = 0;
-    cameraX = 0;
-    particles.length = 0;
+    obstacleInterval = 1400;
+
+    hud.style.display = "flex";
+    menu.style.display = "none";
+    pauseScreen.style.display = "none";
+    gameOverScreen.style.display = "none";
+
+    requestAnimationFrame(gameLoop);
   }
 
-  function updateGame(dt) {
-    speed = Math.min(maxSpeed, baseSpeed + Math.floor(score / 100));
-    scoreMultiplier = 1 + Math.floor(score / 250) * 0.25;
-    obstacleInterval = Math.max(360, 850 - Math.floor(score / 30) * 25);
+  function gameOver() {
+    gameRunning = false;
+    hud.style.display = "none";
+    gameOverScreen.style.display = "block";
+    finalScoreEl.textContent = Math.floor(score);
+  }
+
+  function togglePause() {
+    if (!gameRunning) return;
+    paused = !paused;
+    pauseScreen.style.display = paused ? "block" : "none";
+    if (!paused) {
+      lastTime = 0;
+      requestAnimationFrame(gameLoop);
+    }
+  }
+
+  function spawnObstacle() {
+    const x = cameraX + canvas.width + Math.random() * 400 + 200;
+    const y = getTerrainHeight(x) - 30;
+    obstacles.push(new Obstacle(x, y));
+  }
+
+  function updateParticles() {
+    for(let i=particles.length-1; i>=0; i--){
+      const p = particles[i];
+      p.update();
+      if(p.age > p.lifetime || p.radius < 0.3){
+        particles.splice(i, 1);
+      }
+    }
+  }
+  function drawParticles() {
+    particles.forEach(p => p.draw());
+  }
+
+  // Main game loop
+  function gameLoop(timestamp=0) {
+    if (!gameRunning || paused) return;
+
+    if (!lastTime) lastTime = timestamp;
+    const delta = timestamp - lastTime;
+    lastTime = timestamp;
+
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+    // Update speed & difficulty over time
+    speed += 0.003;
+    if(speed > maxSpeed) speed = maxSpeed;
 
     ball.update();
-    for (let obs of obstacles) obs.update();
-    for (let p of particles) p.update();
+    cameraX += (ball.x - cameraX - 200) * 0.15;
 
-    obstacles = obstacles.filter(o => o.x - cameraX + o.radius > 0);
-    particles.splice(0, particles.length - 150);
-
-    cameraX = Math.max(0, ball.x - 200);
-
-    obstacleTimer += dt * 1000;
-    if (obstacleTimer > obstacleInterval) {
+    obstacleTimer += delta;
+    if(obstacleTimer > obstacleInterval){
       spawnObstacle();
       obstacleTimer = 0;
+      if(obstacleInterval > 600) obstacleInterval -= 6;
     }
 
-    for (let i = 0; i < obstacles.length; i++) {
-      const obs = obstacles[i];
-      const dx = (ball.x - obs.x);
-      const dy = (ball.y - obs.y);
-      const dist = Math.sqrt(dx * dx + dy * dy);
-      if (dist < ball.radius + obs.radius - 5) {
+    // Update & draw stars background parallax
+    starLayers.forEach(layer => {
+      layer.stars.forEach(star => {
+        star.x -= speed * layer.speedRatio;
+        if(star.x < 0) star.x += canvas.width;
+        ctx.beginPath();
+        ctx.fillStyle = `rgba(0, 255, 255, ${star.alpha})`;
+        ctx.arc(star.x, star.y, star.size, 0, 2 * Math.PI);
+        ctx.fill();
+      });
+    });
+
+    // Draw terrain
+    ctx.fillStyle = "#001d33";
+    ctx.beginPath();
+    ctx.moveTo(0, canvas.height);
+    for(let px=0; px<=canvas.width; px++){
+      ctx.lineTo(px, getTerrainHeight(px + cameraX));
+    }
+    ctx.lineTo(canvas.width, canvas.height);
+    ctx.closePath();
+    ctx.fill();
+
+    // Update and draw obstacles
+    for(let i = obstacles.length - 1; i >= 0; i--){
+      const ob = obstacles[i];
+      ob.update();
+      if(ob.x + ob.radius < cameraX){
         obstacles.splice(i, 1);
-        i--;
+        score += 12 * scoreMultiplier;
+      } else if(checkCollisionCircle(ball, ob)){
+        createCollisionParticles(ball.x, ball.y);
         lives--;
-        if (lives <= 0) {
-          endGame();
+        obstacles.splice(i, 1);
+        if(lives <= 0) {
+          gameOver();
           return;
         }
       }
     }
 
-    score += speed * dt * 0.04 * scoreMultiplier;
-  }
+    updateParticles();
 
-  function drawGame() {
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
-    document.body.style.background = skinColors[currentSkin].bg;
-    drawStars();
-    drawTerrain();
+    // Draw ball, obstacles, particles
     ball.draw();
-    for (let obs of obstacles) obs.draw();
-    for (let p of particles) p.draw();
-  }
+    obstacles.forEach(ob => ob.draw());
+    drawParticles();
 
-  function endGame() {
-    gameRunning = false;
-    hud.style.display = "none";
-    menu.style.display = "none";
-    pauseScreen.style.display = "none";
-    gameOverScreen.style.display = "block";
-    finalScoreEl.textContent = Math.floor(score);
-  }
-
-  function gameLoop(timestamp) {
-    if (!gameRunning || paused) return;
-
-    if (!lastTime) lastTime = timestamp;
-    const dt = Math.min(1.0, (timestamp - lastTime) / 1000);
-
-    updateGame(dt);
-    drawGame();
-
+    // HUD update with smooth lerp for multiplier
+    score += delta * 0.015 * scoreMultiplier;
     scoreEl.textContent = Math.floor(score);
     livesEl.textContent = lives;
-    multiplierEl.textContent = scoreMultiplier.toFixed(2) + "x";
+    multiplierEl.textContent = scoreMultiplier.toFixed(1) + "x";
 
-    lastTime = timestamp;
+    // Game over if ball falls off screen
+    if(ball.y - ball.radius > canvas.height + 100){
+      gameOver();
+      return;
+    }
+
     requestAnimationFrame(gameLoop);
   }
 
-  function handleJump() {
-    if (gameRunning && !paused) ball.jump();
+  // Input handlers
+  function onJump() {
+    if(!gameRunning || paused) return;
+    ball.jump();
   }
+
   window.addEventListener("keydown", e => {
-    if (e.code === "Space") {
-      handleJump();
+    if(e.code === "Space" || e.code === "ArrowUp"){
       e.preventDefault();
+      onJump();
     }
-    else if (e.code === "KeyP" && gameRunning) {
-      paused = !paused;
-      pauseScreen.style.display = paused ? "block" : "none";
-      if (!paused) {
-        lastTime = 0;
-        requestAnimationFrame(gameLoop);
-      }
-    }
-  });
-  canvas.addEventListener("pointerdown", e => {
-    if (gameRunning && !paused) {
-      handleJump();
-    }
-    if (paused) {
-      paused = false;
-      pauseScreen.style.display = "none";
-      lastTime = 0;
-      requestAnimationFrame(gameLoop);
+    if(e.code === "KeyP"){
+      togglePause();
     }
   });
 
-  startBtn.addEventListener("click", () => {
-    menu.style.display = "none";
-    gameOverScreen.style.display = "none";
-    hud.style.display = "flex";
-    resetGame();
-    gameRunning = true;
-    paused = false;
-    lastTime = 0;
-    requestAnimationFrame(gameLoop);
-  });
-
-  restartBtn.addEventListener("click", () => {
-    gameOverScreen.style.display = "none";
-    hud.style.display = "flex";
-    resetGame();
-    gameRunning = true;
-    paused = false;
-    lastTime = 0;
-    requestAnimationFrame(gameLoop);
-  });
-
-  watchAdBtn.addEventListener("click", () => {
-    if (lives <= 0) {
-      lives = 1;
-      gameOverScreen.style.display = "none";
-      hud.style.display = "flex";
-      gameRunning = true;
-      paused = false;
-      lastTime = 0;
-      requestAnimationFrame(gameLoop);
+  window.addEventListener("touchstart", e => {
+    if(!gameRunning){
+      resetGame();
+    } else if(paused){
+      togglePause();
+    } else {
+      onJump();
     }
-  });
+  }, {passive:true});
 
-  openSkinStoreBtn.addEventListener("click", () => {
-    skinStore.style.display = "block";
-    menu.style.display = "none";
-    gameOverScreen.style.display = "none";
-  });
-  closeSkinStoreBtn.addEventListener("click", () => {
-    skinStore.style.display = "none";
-    menu.style.display = "block";
-  });
+  startBtn.onclick = () => resetGame();
+  restartBtn.onclick = () => resetGame();
 
-  document.querySelectorAll('.skinBtn').forEach(btn => {
-    btn.addEventListener("click", () => {
-      const skin = btn.dataset.skin;
-      const price = parseInt(btn.dataset.price, 10);
-      if (ownedSkins.has(skin) || price === 0) {
-        currentSkin = skin;
-        ownedSkins.add(skin);
-        document.querySelectorAll('.skinBtn').forEach(btn => btn.classList.remove('selected'));
-        btn.classList.add('selected');
-        skinStore.style.display = "none";
-        menu.style.display = "block";
-      } else {
-        if (confirm(`Purchase "${btn.textContent}" for $${price}?`)) {
-          ownedSkins.add(skin);
-          btn.textContent += " (Owned)";
-          currentSkin = skin;
-          document.querySelectorAll('.skinBtn').forEach(btn => btn.classList.remove('selected'));
-          btn.classList.add('selected');
-          skinStore.style.display = "none";
-          menu.style.display = "block";
-        }
-      }
-    });
-  });
-
-  document.querySelector('.skinBtn[data-skin="default"]').classList.add('selected');
-
-  menu.style.display = "block";
-  gameOverScreen.style.display = "none";
-  pauseScreen.style.display = "none";
-  hud.style.display = "none";
 })();
 </script>
+
 </body>
 </html>
+
+
+
+
