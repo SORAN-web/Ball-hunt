@@ -1,0 +1,89 @@
+<!DOCTYPE html><html>
+<head>
+    <title>Jumping Ball Game</title>
+    <style>
+        body { margin: 0; overflow: hidden; }
+        canvas { background: #eee; display: block; margin: 0 auto; }
+    </style>
+</head>
+<body>
+<canvas id="gameCanvas" width="800" height="400"></canvas>
+<script>
+const canvas = document.getElementById('gameCanvas');
+const ctx = canvas.getContext('2d');// Ball properties const ball = { x: 100, y: 300, radius: 20, vy: 0, gravity: 0.5, jumpStrength: -10, grounded: false };
+
+// Obstacles array let obstacles = []; let obstacleTimer = 0; let gameRunning = true;
+
+// Game loop function gameLoop() { if (!gameRunning) return;
+
+ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+// Ball physics
+ball.vy += ball.gravity;
+ball.y += ball.vy;
+
+// Ground collision
+if (ball.y + ball.radius >= canvas.height) {
+    ball.y = canvas.height - ball.radius;
+    ball.vy = 0;
+    ball.grounded = true;
+} else {
+    ball.grounded = false;
+}
+
+// Draw ball
+ctx.beginPath();
+ctx.arc(ball.x, ball.y, ball.radius, 0, Math.PI * 2);
+ctx.fillStyle = 'red';
+ctx.fill();
+ctx.closePath();
+
+// Handle obstacles
+obstacleTimer++;
+if (obstacleTimer > 100) {
+    let heightFactor = Math.random() < 0.5 ? 1 : 2;
+    obstacles.push({
+        x: canvas.width,
+        y: canvas.height - (heightFactor * 60),
+        radius: 30
+    });
+    obstacleTimer = 0;
+}
+
+for (let i = 0; i < obstacles.length; i++) {
+    obstacles[i].x -= 5;
+
+    // Draw obstacle
+    ctx.beginPath();
+    ctx.arc(obstacles[i].x, obstacles[i].y, obstacles[i].radius, 0, Math.PI * 2);
+    ctx.fillStyle = 'black';
+    ctx.fill();
+    ctx.closePath();
+
+    // Collision detection
+    let dx = ball.x - obstacles[i].x;
+    let dy = ball.y - obstacles[i].y;
+    let distance = Math.sqrt(dx * dx + dy * dy);
+    if (distance < ball.radius + obstacles[i].radius) {
+        gameRunning = false;
+        setTimeout(() => {
+            alert('Game Over!');
+            document.location.reload();
+        }, 100);
+        return;
+    }
+}
+
+// Remove off-screen obstacles
+obstacles = obstacles.filter(ob => ob.x + ob.radius > 0);
+
+requestAnimationFrame(gameLoop);
+
+}
+
+// Jump control window.addEventListener('keydown', function(e) { if ((e.code === 'Space' || e.code === 'ArrowUp') && ball.grounded) { ball.vy = ball.jumpStrength; } });
+
+// Start the game requestAnimationFrame(gameLoop); </script>
+
+</body>
+</html>
