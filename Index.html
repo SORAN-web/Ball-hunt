@@ -1,15 +1,12 @@
 <!DOCTYPE html>
-<html lang="en" >
+<html lang="en">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Rolling Ball Runner - Ultra Advanced</title>
   <style>
     @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@700&display=swap');
-    * {
-      margin: 0; padding: 0; box-sizing: border-box;
-      user-select: none;
-    }
+    * { margin: 0; padding: 0; box-sizing: border-box; user-select: none; }
     body, html {
       width: 100%; height: 100%; overflow: hidden;
       background: radial-gradient(ellipse at center, #001020 0%, #000000 100%);
@@ -25,9 +22,7 @@
       height: 500px;
       background: #000011;
       border-radius: 20px;
-      box-shadow:
-        0 0 20px #0ff,
-        inset 0 0 50px #003366;
+      box-shadow: 0 0 20px #0ff, inset 0 0 50px #003366;
     }
     canvas {
       display: block;
@@ -42,9 +37,7 @@
       text-align: center;
       z-index: 10;
       color: #0ff;
-      text-shadow:
-        0 0 5px #00ffff,
-        0 0 10px #00ffff;
+      text-shadow: 0 0 5px #00ffff, 0 0 10px #00ffff;
       user-select: none;
       pointer-events: none;
       font-weight: 900;
@@ -70,9 +63,7 @@
       font-size: 22px;
       line-height: 1.2;
       max-width: 80%;
-      box-shadow:
-        0 0 20px #0ff,
-        inset 0 0 60px #00ffff;
+      box-shadow: 0 0 20px #0ff, inset 0 0 60px #00ffff;
     }
     #menu h1, #pauseScreen h2, #gameOverScreen h2 {
       font-size: 42px;
@@ -95,51 +86,41 @@
       cursor: pointer;
       transition: 0.3s ease;
       user-select: none;
-      box-shadow:
-        0 0 10px #00ffff;
+      box-shadow: 0 0 10px #00ffff;
       text-transform: uppercase;
       letter-spacing: 0.1em;
     }
     button:hover {
       background: linear-gradient(90deg, #00ffff 0%, #00ffff 70%, #004466 100%);
       color: #e0ffff;
-      box-shadow:
-        0 0 20px #00ffff,
-        0 0 40px #00ffff;
+      box-shadow: 0 0 20px #00ffff, 0 0 40px #00ffff;
     }
-    button:active {
-      transform: scale(0.95);
-    }
+    button:active { transform: scale(0.95); }
   </style>
 </head>
 <body>
   <div id="gameContainer">
     <canvas id="gameCanvas" width="900" height="500"></canvas>
-
     <div id="hud" style="display:none;">
       <div>Score: <span id="score">0</span></div>
       <div>Lives: <span id="lives">3</span></div>
       <div>Multiplier: <span id="multiplier">1.0x</span></div>
     </div>
-
     <div id="menu">
       <h1>Rolling Ball Runner</h1>
       <p>Space / Tap to jump (Double jump). Avoid obstacles, survive!</p>
       <button id="startBtn">Start Game</button>
     </div>
-
     <div id="pauseScreen" style="display:none;">
       <h2>Paused</h2>
       <p>Press P or Tap to Resume</p>
     </div>
-
     <div id="gameOverScreen" style="display:none;">
       <h2>Game Over</h2>
       <p>Your Score: <span id="finalScore">0</span></p>
       <button id="restartBtn">Restart</button>
     </div>
   </div>
-
 <script>
 (() => {
   const canvas = document.getElementById("gameCanvas");
@@ -172,7 +153,6 @@
     { count: 60, speedRatio: 0.8, stars: [] },
   ];
 
-  // Utility: random between min and max
   function randRange(min, max) { return Math.random() * (max - min) + min; }
 
   // Initialize stars for each layer
@@ -187,7 +167,19 @@
     }
   });
 
-  // Ball class
+  // Sound effect placeholder
+  function playSound(name) {
+    // Example: playSound('jump'), playSound('collision'), playSound('powerup')
+    // Insert your sound logic here if desired.
+    // console.log("Sound:", name);
+  }
+
+  // Game state variables
+  let ball, obstacles, powerUps, score, lives, scoreMultiplier, speed, gameRunning, paused, lastTime;
+  let obstacleTimer, obstacleInterval;
+  let cameraX = 0;
+
+  // Ball class (moves forward visually)
   class Ball {
     constructor() {
       this.radius = 30;
@@ -203,12 +195,11 @@
       this.shadowMaxAlpha = 0.8;
     }
     update() {
+      this.x += this.vx * 0.12;
+      if (this.x < 200) this.x = 200;
+      if (this.x + this.radius > worldWidth) this.x = worldWidth - this.radius;
       this.vy += gravity;
       this.y += this.vy;
-      this.x += speed;
-
-      if (this.x + this.radius > worldWidth) this.x = worldWidth - this.radius;
-
       const terrainY = getTerrainHeight(this.x);
       if (this.y + this.radius > terrainY) {
         this.y = terrainY - this.radius;
@@ -220,8 +211,6 @@
       } else {
         this.grounded = false;
       }
-
-      // Shadow offset for bounce effect
       this.shadowOffsetY = Math.min(30, Math.max(0, terrainY - (this.y + this.radius)));
     }
     jump() {
@@ -230,31 +219,27 @@
         this.jumpCount++;
         this.grounded = false;
         createJumpParticles(this.x, this.y + this.radius);
+        playSound('jump');
       }
     }
     draw() {
       const screenX = this.x - cameraX;
-
-      // Shadow
       const terrainY = getTerrainHeight(this.x);
       ctx.beginPath();
       ctx.ellipse(screenX, terrainY + this.shadowOffsetY, this.radius * 1.1, this.radius * 0.3, 0, 0, 2 * Math.PI);
       ctx.fillStyle = `rgba(0,0,0,${this.shadowBaseAlpha + (this.shadowMaxAlpha - this.shadowBaseAlpha) * (1 - this.shadowOffsetY / 30)})`;
       ctx.fill();
 
-      // Ball gradient
       const grad = ctx.createRadialGradient(screenX - this.radius/4, this.y - this.radius/3, this.radius/4, screenX, this.y, this.radius);
-      grad.addColorStop(0, "#001f4d");
+      grad.addColorStop(0, "#00ffff");
       grad.addColorStop(0.5, "#004080");
       grad.addColorStop(1, "#001122");
       ctx.fillStyle = grad;
       ctx.shadowColor = "#00ffff";
-      ctx.shadowBlur = 12;
+      ctx.shadowBlur = 16;
       ctx.beginPath();
       ctx.arc(screenX, this.y, this.radius, 0, 2 * Math.PI);
       ctx.fill();
-
-      // Reset shadow blur
       ctx.shadowBlur = 0;
     }
   }
@@ -271,7 +256,6 @@
     }
     update() {
       this.x -= speed;
-      // Glow pulse animation
       this.glowAlpha += 0.015 * this.glowDirection;
       if (this.glowAlpha >= 1) this.glowDirection = -1;
       else if (this.glowAlpha <= 0.5) this.glowDirection = 1;
@@ -280,7 +264,6 @@
       const screenX = this.x - cameraX;
       if(screenX + this.radius < 0 || screenX - this.radius > canvas.width) return;
 
-      // Glow
       ctx.shadowColor = `rgba(255, 20, 20, ${this.glowAlpha})`;
       ctx.shadowBlur = 18;
       ctx.beginPath();
@@ -289,12 +272,51 @@
       ctx.fill();
 
       ctx.shadowBlur = 0;
-      // Core circle
       ctx.beginPath();
       ctx.fillStyle = "#990000";
       ctx.arc(screenX, this.y, this.radius*0.7, 0, 2 * Math.PI);
       ctx.fill();
     }
+  }
+
+  // Power-up class
+  class PowerUp {
+    constructor(x, y) {
+      this.x = x;
+      this.y = y;
+      this.radius = 22;
+      this.type = 'speed';
+      this.collected = false;
+      this.glow = 0;
+    }
+    update() {
+      this.x -= speed;
+      this.glow += 0.15;
+    }
+    draw() {
+      const screenX = this.x - cameraX;
+      if (screenX + this.radius < 0 || screenX - this.radius > canvas.width) return;
+      ctx.save();
+      ctx.shadowColor = "#0ff";
+      ctx.shadowBlur = 20 + 10 * Math.sin(this.glow);
+      ctx.beginPath();
+      ctx.arc(screenX, this.y, this.radius, 0, 2 * Math.PI);
+      ctx.fillStyle = "#00ffff";
+      ctx.globalAlpha = 0.8 + 0.2 * Math.sin(this.glow);
+      ctx.fill();
+      ctx.globalAlpha = 1;
+      ctx.shadowBlur = 0;
+      ctx.restore();
+      ctx.beginPath();
+      ctx.arc(screenX, this.y, this.radius * 0.6, 0, 2 * Math.PI);
+      ctx.fillStyle = "#fff";
+      ctx.fill();
+    }
+  }
+  function spawnPowerUp() {
+    const x = cameraX + canvas.width + Math.random() * 1000 + 600;
+    const y = getTerrainHeight(x) - 60;
+    powerUps.push(new PowerUp(x, y));
   }
 
   // Particle system for jumps & collisions
@@ -313,7 +335,7 @@
     update() {
       this.x += this.vx;
       this.y += this.vy;
-      this.vy += 0.3; // gravity
+      this.vy += 0.3;
       this.age++;
       this.radius *= 0.95;
     }
@@ -360,14 +382,10 @@
     return dist < a.radius + b.radius;
   }
 
-  // Game state
-  let ball, obstacles, score, lives, scoreMultiplier, speed, gameRunning, paused, lastTime;
-  let obstacleTimer, obstacleInterval;
-  let cameraX = 0;
-
   function resetGame() {
     ball = new Ball();
     obstacles = [];
+    powerUps = [];
     score = 0;
     lives = maxLives;
     scoreMultiplier = 1.0;
@@ -377,6 +395,7 @@
     lastTime = 0;
     obstacleTimer = 0;
     obstacleInterval = 1400;
+    cameraX = 0;
 
     hud.style.display = "flex";
     menu.style.display = "none";
@@ -432,13 +451,17 @@
 
     ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-    // Update speed & difficulty over time
     speed += 0.003;
     if(speed > maxSpeed) speed = maxSpeed;
 
+    // Ball & camera
     ball.update();
-    cameraX += (ball.x - cameraX - 200) * 0.15;
+    cameraX += speed;
 
+    // Power-up spawn
+    if (Math.random() < 0.003) spawnPowerUp();
+
+    // Obstacles
     obstacleTimer += delta;
     if(obstacleTimer > obstacleInterval){
       spawnObstacle();
@@ -446,7 +469,7 @@
       if(obstacleInterval > 600) obstacleInterval -= 6;
     }
 
-    // Update & draw stars background parallax
+    // Parallax stars
     starLayers.forEach(layer => {
       layer.stars.forEach(star => {
         star.x -= speed * layer.speedRatio;
@@ -458,7 +481,7 @@
       });
     });
 
-    // Draw terrain
+    // Terrain
     ctx.fillStyle = "#001d33";
     ctx.beginPath();
     ctx.moveTo(0, canvas.height);
@@ -469,7 +492,7 @@
     ctx.closePath();
     ctx.fill();
 
-    // Update and draw obstacles
+    // Obstacles
     for(let i = obstacles.length - 1; i >= 0; i--){
       const ob = obstacles[i];
       ob.update();
@@ -478,6 +501,7 @@
         score += 12 * scoreMultiplier;
       } else if(checkCollisionCircle(ball, ob)){
         createCollisionParticles(ball.x, ball.y);
+        playSound('collision');
         lives--;
         obstacles.splice(i, 1);
         if(lives <= 0) {
@@ -487,20 +511,38 @@
       }
     }
 
+    // Power-ups
+    for (let i = powerUps.length - 1; i >= 0; i--) {
+      const p = powerUps[i];
+      p.update();
+      if (p.x + p.radius < cameraX) {
+        powerUps.splice(i, 1);
+      } else if (checkCollisionCircle(ball, p)) {
+        playSound('powerup');
+        speed += 3;
+        scoreMultiplier += 0.2;
+        powerUps.splice(i, 1);
+      }
+    }
+
     updateParticles();
 
-    // Draw ball, obstacles, particles
+    // Draw
     ball.draw();
     obstacles.forEach(ob => ob.draw());
+    powerUps.forEach(p => p.draw());
     drawParticles();
 
-    // HUD update with smooth lerp for multiplier
+    // HUD UI Glow
+    scoreEl.parentElement.style.textShadow = "0 0 12px #00ffff, 0 0 20px #00ffff";
+    livesEl.parentElement.style.textShadow = "0 0 12px #ff4444, 0 0 20px #ff4444";
+    multiplierEl.parentElement.style.textShadow = "0 0 12px #ffff00, 0 0 20px #ffff00";
+
     score += delta * 0.015 * scoreMultiplier;
     scoreEl.textContent = Math.floor(score);
     livesEl.textContent = lives;
     multiplierEl.textContent = scoreMultiplier.toFixed(1) + "x";
 
-    // Game over if ball falls off screen
     if(ball.y - ball.radius > canvas.height + 100){
       gameOver();
       return;
@@ -514,7 +556,6 @@
     if(!gameRunning || paused) return;
     ball.jump();
   }
-
   window.addEventListener("keydown", e => {
     if(e.code === "Space" || e.code === "ArrowUp"){
       e.preventDefault();
@@ -540,10 +581,5 @@
 
 })();
 </script>
-
 </body>
 </html>
-
-
-
-
